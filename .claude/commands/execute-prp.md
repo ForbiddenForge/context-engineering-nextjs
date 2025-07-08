@@ -140,6 +140,7 @@ The pre-commit hooks will verify EVERYTHING. They will:
    - Testing strategy
 
 3. **Implementation Phase:**
+
    - Create components with TypeScript interfaces first
    - Implement with ESLint/Prettier on save
    - Test each component in isolation
@@ -193,6 +194,7 @@ The pre-commit hooks will verify EVERYTHING. They will:
 
 **TODO.md Update Format:**
 When completing implementation, update .claude/TODO.md with:
+
 ```
 ✅ COMPLETED [DATE]: [Feature Name] - [Brief description]
    - PRP: [original-prp-file.md] → ARCHIVE_[original-prp-file.md]
@@ -210,8 +212,8 @@ When completing implementation, update .claude/TODO.md with:
 - [ ] Accessibility audit passes
 - [ ] Performance metrics acceptable
 - [ ] Old/replaced code is DELETED
-- [ ] RENAME the PRP file to ARCHIVE_[original-name].md
-- [ ] MOVE the archived PRP file to ./archive/ folder (create if needed)
+- [ ] RENAME the PRP file to ARCHIVE\_[original-name].md
+- [ ] MOVE the archived PRP file to ./PRPs/archive/ folder (create if needed)
 - [ ] UPDATE .claude/TODO.md marking this task as COMPLETED
 - [ ] Documentation is complete
 - [ ] NO console.logs or debug code
@@ -219,6 +221,7 @@ When completing implementation, update .claude/TODO.md with:
 
 **FINAL STEP - MANDATORY:**
 Before saying "implementation complete", you MUST:
+
 1. Update .claude/TODO.md with completion status
 2. Rename and move the PRP file to archive
 3. Confirm all checklist items are complete
