@@ -58,7 +58,13 @@
       "WebFetch(domain:stackoverflow.com)",
       "Bash(./install.sh:*)",
       "Bash(../install.sh)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(PRPS_TARGET_DIR=/tmp/test_install_target bash -x ./install.sh --overwrite-all)",
+      "Bash(PRPS_TARGET_DIR=/tmp/test_install_target ./install.sh --overwrite-all)",
+      "Bash(/tmp/debug_install.sh:*)",
+      "Bash(PRPS_TARGET_DIR=/tmp/test_install_target timeout 10 ./install.sh --overwrite-all)",
+      "Bash(PRPS_TARGET_DIR=/tmp/test_install_target timeout 30 ./install.sh --overwrite-all)",
+      "Bash(timeout 5 cp -r /home/cryptox/code/context-engineering-nextjs/.claude /tmp/test_claude_copy)"
     ],
     "deny": []
   },

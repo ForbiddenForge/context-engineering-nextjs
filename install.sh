@@ -155,6 +155,7 @@ copy_specific_items() {
     local items_to_copy=(".claude" "examples" "PROMPTS" "PRPs" "CLAUDE.md")
     
     for item in "${items_to_copy[@]}"; do
+        print_info "Processing item: $item"
         local source_item="$source_dir/$item"
         local target_item="$target_dir/$item"
         
@@ -173,7 +174,7 @@ copy_specific_items() {
                 # If we're in batch mode with skip action, skip the entire directory
                 if [[ "$batch_mode" == "true" ]] && [[ "$default_action" == "skip" ]]; then
                     print_info "Skipping directory $item (batch mode: skip all)"
-                    ((files_skipped++))
+                    ((files_skipped++)) || true
                     continue
                 fi
                 
@@ -184,20 +185,21 @@ copy_specific_items() {
                 # Target directory doesn't exist, copy entire directory
                 print_info "Copying directory $item"
                 cp -r "$source_item" "$target_item"
-                ((files_copied++))
+                ((files_copied++)) || true
+                print_info "Successfully copied directory: $item"
             fi
         # Handle files
         elif [[ -f "$source_item" ]]; then
             if [[ -f "$target_item" ]]; then
                 if handle_file_conflict "$source_item" "$target_item" "$item"; then
-                    ((files_copied++))
+                    ((files_copied++)) || true
                 else
-                    ((files_skipped++))
+                    ((files_skipped++)) || true
                 fi
             else
                 print_info "Copying file $item"
                 cp "$source_item" "$target_item"
-                ((files_copied++))
+                ((files_copied++)) || true
             fi
         fi
     done
@@ -236,7 +238,7 @@ copy_directory_contents() {
             print_info "Copying $dir_name/$rel_path"
             cp "$file" "$target_file"
         fi
-    done < <(find "$source_dir" -type f -print0) || true
+    done < <(find "$source_dir" -type f -print0 2>/dev/null) || true
 }
 
 # Check if script is running interactively
@@ -312,7 +314,7 @@ main() {
     while IFS= read -r -d '' file; do
         chmod +x "$file"
         print_info "Made executable: ${file#$SCRIPT_DIR/}"
-        ((sh_files_count++))
+        ((sh_files_count++)) || true
     done < <(find "$SCRIPT_DIR" -name "*.sh" -type f -print0) || true
     
     if [[ $sh_files_count -eq 0 ]]; then
@@ -449,7 +451,7 @@ main() {
     local target_sh_count=0
     while IFS= read -r -d '' file; do
         chmod +x "$file"
-        ((target_sh_count++))
+        ((target_sh_count++)) || true
     done < <(find "$target_dir" -name "*.sh" -type f -print0 2>/dev/null) || true
     
     if [[ $target_sh_count -gt 0 ]]; then

@@ -37,21 +37,41 @@ This framework can be installed into any existing Next.js project. The installat
 
 ### Installation Options
 
-#### Interactive Installation (Recommended)
+#### Interactive Installation (Default)
 ```bash
 ./install.sh
 ```
 The script will guide you through the process and let you choose how to handle conflicts.
 
-#### Batch Mode Installation
-For automated deployments or CI/CD:
+#### Non-Interactive Installation
 
+For automated deployments, CI/CD, or when you want to skip all prompts:
+
+**Option 1: Skip conflicts (preserve existing files)**
 ```bash
-# Skip all conflicts (keep existing files)
-PRPS_TARGET_DIR=/path/to/project ./install.sh --batch
+# This will install only new files and skip any that already exist
+PRPS_TARGET_DIR=/path/to/your/nextjs/project ./install.sh --batch
+```
 
-# Overwrite all conflicts
-PRPS_TARGET_DIR=/path/to/project ./install.sh --overwrite-all
+**Option 2: Overwrite all conflicts**
+```bash
+# This will overwrite any existing files with the framework versions
+PRPS_TARGET_DIR=/path/to/your/nextjs/project ./install.sh --overwrite-all
+```
+
+**Environment Variables:**
+- `PRPS_TARGET_DIR` - Required for non-interactive modes. Must be an absolute path to your target project.
+
+**Examples:**
+```bash
+# Install to current directory, skip conflicts
+PRPS_TARGET_DIR=$(pwd) ./install.sh --batch
+
+# Install to specific project, overwrite everything
+PRPS_TARGET_DIR=/home/user/my-nextjs-app ./install.sh --overwrite-all
+
+# View all available options
+./install.sh --help
 ```
 
 ### Post-Installation
