@@ -149,7 +149,9 @@ prps-agentic-eng-nextjs/
 │   │   ├── execute-prp.md            # Execute PRPs with quality gates
 │   │   ├── check-errors.md           # Comprehensive error checking/fixing
 │   │   ├── check-security.md         # Security audit and remediation
-│   │   └── check-api-database.md     # API/database optimization and cost reduction
+│   │   ├── check-api-database.md     # API/database optimization and cost reduction
+│   │   ├── create-nextjs-project.md  # Initialize production-ready Next.js projects
+│   │   └── create-vite-project.md    # Initialize production-ready Vite projects
 │   ├── hooks/                    # Automated quality assurance
 │   │   ├── smart-lint.sh            # Intelligent linting across languages
 │   │   ├── ntfy-notifier.sh         # Push notifications
@@ -190,6 +192,20 @@ PRPs are detailed implementation blueprints that contain:
 - **Anti-patterns** - What to avoid
 
 ## 🛠️ Commands Reference
+
+### Commands Summary
+
+| Command | Purpose |
+|---------|---------|
+| `/generate-prp-prompt` | Synthesize comprehensive prompts from feature descriptions |
+| `/generate-prp` | Create implementation blueprints (PRPs) from prompts |
+| `/execute-prp` | Implement features with strict quality standards |
+| `/check-errors` | Fix all code quality issues (linting, TypeScript, tests) |
+| `/check-security` | Audit and fix security vulnerabilities |
+| `/check-api-database` | Optimize API calls and database queries |
+| `/update-project` | Generate/update PROJECT.md documentation |
+| `/create-nextjs-project` | Initialize a production-ready Next.js project |
+| `/create-vite-project` | Initialize a production-ready Vite + React project |
 
 ### Core Workflow Commands
 
@@ -332,6 +348,46 @@ Generates or updates `PROJECT.md` with comprehensive project context including t
 ```
 
 **Output:** Creates or updates `.claude/PROJECT.md` with current project state.
+
+### Project Creation Commands
+
+#### `/create-nextjs-project <description>`
+Initialize a production-ready Next.js project from a vision, with zero compromises on quality.
+
+**Workflow:**
+1. **Information Gathering** - Clarifies technical decisions (App Router vs Pages, auth needs, etc.)
+2. **Architecture Planning** - Designs robust, scalable solution
+3. **PRP Generation** - Creates 4-6 focused implementation PRPs
+4. **Quality Enforcement** - TypeScript strict mode, ESLint, testing from day one
+
+**Example:**
+```bash
+/create-nextjs-project "e-commerce platform with product catalog, cart, and checkout"
+```
+
+**Output:** 
+- Comprehensive architecture document
+- Multiple PRPs for systematic implementation
+- Production-ready Next.js setup with all quality gates
+
+#### `/create-vite-project <description>`
+Initialize a production-ready Vite + React project with focus on performance and modern tooling.
+
+**Workflow:**
+1. **Framework Selection** - React, Vue, Preact, or Vanilla options
+2. **Performance Planning** - Bundle optimization and code splitting strategies
+3. **PRP Generation** - Creates 4-6 focused implementation PRPs
+4. **Quality Standards** - Vitest, strict TypeScript, optimized builds
+
+**Example:**
+```bash
+/create-vite-project "real-time collaborative whiteboard with drawing tools"
+```
+
+**Output:**
+- Optimized Vite configuration
+- Multiple PRPs for feature implementation
+- Performance-focused setup with HMR and tree-shaking
 
 ## 🎣 Hooks System
 
