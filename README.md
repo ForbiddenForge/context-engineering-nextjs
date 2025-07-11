@@ -196,6 +196,12 @@ PRPs are detailed implementation blueprints that contain:
 #### `/generate-prp-prompt <description>`
 Synthesizes comprehensive prompts by combining templates with your feature description.
 
+**Features:**
+- Combines templates with your specific requirements
+- Includes relevant documentation links
+- Adds context from existing codebase
+- Structures requirements clearly
+
 **Example:**
 ```bash
 /generate-prp-prompt "user authentication system with social login"
@@ -256,8 +262,20 @@ Comprehensive code quality verification and fixing using parallel agents.
 - Build errors
 - Import/export issues
 
+**Example:**
+```bash
+/check-errors
+```
+
+**Output:** Fixes all errors and provides a clean codebase with zero issues.
+
 #### `/check-security`
 Security audit and vulnerability remediation using parallel fixing agents.
+
+**Approach:** "FIXING task, not reporting task"
+- Spawns multiple agents to fix security issues in parallel
+- Zero tolerance for vulnerabilities
+- Implements security best practices automatically
 
 **Security Checks:**
 - Exposed API keys/credentials
@@ -271,6 +289,8 @@ Security audit and vulnerability remediation using parallel fixing agents.
 ```bash
 /check-security
 ```
+
+**Output:** Fixes all identified security issues and provides a summary.
 
 #### `/check-api-database`
 Comprehensive API and database optimization for performance and cost reduction.
@@ -293,10 +313,25 @@ Comprehensive API and database optimization for performance and cost reduction.
 /check-api-database
 ```
 
+**Output:** Optimized code with reduced API calls and improved query performance.
+
 ### Utility Commands
 
 #### `/update-project`
 Generates or updates `PROJECT.md` with comprehensive project context including tech stack, architecture, and conventions.
+
+**Features:**
+- Auto-detects tech stack and dependencies
+- Documents architecture patterns
+- Captures coding conventions
+- Maps project structure
+
+**Example:**
+```bash
+/update-project
+```
+
+**Output:** Creates or updates `.claude/PROJECT.md` with current project state.
 
 ## 🎣 Hooks System
 
@@ -306,19 +341,37 @@ The framework includes intelligent hooks that automatically maintain code qualit
 
 #### `smart-lint.sh`
 **Triggers:** After Write/Edit operations
+
 **Features:**
 - Auto-detects project type (Go, Python, JS/TS, Rust, Nix)
 - Respects project Makefiles and package.json scripts
 - Smart file filtering (only processes modified files)
 - Zero tolerance - everything must be green
 
+**Example Output:**
+```
+🔍 Style Check - Validating code formatting...
+[INFO] Project type: nextjs
+[INFO] Running: npm run lint
+✅ All checks passed!
+```
+
 #### `ntfy-notifier.sh`
 **Triggers:** Task completion or errors
+
 **Features:**
 - Push notifications to your devices
 - Terminal context detection (tmux, Terminal, iTerm2)
 - Rate limiting to prevent spam
 - Configurable via YAML config
+
+**Configuration Example:**
+```yaml
+# .claude/hooks/ntfy-config.yaml
+server: https://ntfy.sh
+topic: your-topic-name
+enabled: true
+```
 
 ### Customizing Hooks
 
@@ -482,12 +535,25 @@ What to avoid and why
 
 **Script exits after Step 1:**
 - This usually means you're trying to install into the same directory as the source
-- Run the script from your project directory: `cd /your/project && /path/to/prps-agentic-eng-nextjs/install.sh`
+- Run the script from your project directory:
+
+**Example:**
+```bash
+cd /your/project && /path/to/prps-agentic-eng-nextjs/install.sh
+```
 
 **"Please enter 1, 2, or 3" infinite loop:**
 - This occurs when the script can't read input properly
-- Try running with explicit options: `./install.sh --batch` or `./install.sh --overwrite-all`
-- Or ensure you're running in a proper terminal (not through a script or pipe)
+- Try running with explicit options or ensure you're running in a proper terminal
+
+**Examples:**
+```bash
+# Use batch mode to skip prompts
+./install.sh --batch
+
+# Or overwrite all conflicts
+./install.sh --overwrite-all
+```
 
 **Permission denied errors:**
 ```bash
@@ -541,6 +607,15 @@ tail -f /tmp/claude-hooks.log
 3. Include comprehensive documentation
 4. Test thoroughly before committing
 
+**Example:**
+```bash
+# Create a new command file
+touch .claude/commands/my-custom-command.md
+
+# Edit with your preferred editor
+vim .claude/commands/my-custom-command.md
+```
+
 ### Improving Templates
 
 1. Update templates in `PRPs/templates/`
@@ -559,12 +634,18 @@ tail -f /tmp/claude-hooks.log
 
 ### Multi-Agent Orchestration
 
-The framework supports spawning multiple agents for parallel problem-solving:
+The framework supports spawning multiple agents for parallel problem-solving.
 
+**Example:**
 ```bash
 # This command will spawn multiple agents to fix different error types
 /check-errors
 ```
+
+**Benefits:**
+- Faster resolution of complex issues
+- Parallel processing of independent tasks
+- Specialized agents for specific error types
 
 ### Custom Validation Gates
 
