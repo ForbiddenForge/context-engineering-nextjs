@@ -17,6 +17,7 @@ batch_mode=false
 default_action="skip"
 interactive_mode=false
 conflict_choice=""
+add_to_gitignore=false
 
 # Function to print colored output
 print_info() {
@@ -210,6 +211,54 @@ copy_specific_items() {
     fi
 }
 
+# Function to add installed items to .gitignore
+add_items_to_gitignore() {
+    local target_dir="$1"
+    local gitignore_file="$target_dir/.gitignore"
+    local items_to_add=(".claude" "examples" "PROMPTS" "PRPs" "CLAUDE.md")
+    local items_added=0
+    
+    print_info "Adding installed items to .gitignore..."
+    
+    # Create .gitignore if it doesn't exist
+    if [[ ! -f "$gitignore_file" ]]; then
+        print_info "Creating .gitignore file"
+        touch "$gitignore_file"
+    fi
+    
+    # Add a section header if it doesn't exist
+    if ! grep -q "# PRPS Agentic Engineering files" "$gitignore_file" 2>/dev/null; then
+        echo "" >> "$gitignore_file"
+        echo "# PRPS Agentic Engineering files" >> "$gitignore_file"
+        echo "# Added by install.sh - these files are specific to your local development" >> "$gitignore_file"
+    fi
+    
+    # Add each item if it's not already in .gitignore
+    for item in "${items_to_add[@]}"; do
+        # Check if the item exists in the target directory
+        if [[ -e "$target_dir/$item" ]]; then
+            # Check if the item is already in .gitignore
+            if ! grep -q "^${item}$" "$gitignore_file" 2>/dev/null && \
+               ! grep -q "^/${item}$" "$gitignore_file" 2>/dev/null && \
+               ! grep -q "^${item}/$" "$gitignore_file" 2>/dev/null && \
+               ! grep -q "^/${item}/$" "$gitignore_file" 2>/dev/null; then
+                echo "$item" >> "$gitignore_file"
+                print_info "Added $item to .gitignore"
+                ((items_added++)) || true
+            else
+                print_info "$item is already in .gitignore"
+            fi
+        fi
+    done
+    
+    if [[ $items_added -gt 0 ]]; then
+        print_success "Added $items_added item(s) to .gitignore"
+        print_warning "Remember to commit your updated .gitignore file"
+    else
+        print_info "All items were already in .gitignore"
+    fi
+}
+
 # Function to copy directory contents with conflict handling
 copy_directory_contents() {
     local source_dir="$1"
@@ -251,9 +300,10 @@ usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options:"
-    echo "  --batch          Run in batch mode (skip all prompts, use defaults)"
-    echo "  --overwrite-all  Run in batch mode and overwrite all conflicting files"
-    echo "  --help           Show this help message"
+    echo "  --batch             Run in batch mode (skip all prompts, use defaults)"
+    echo "  --overwrite-all     Run in batch mode and overwrite all conflicting files"
+    echo "  --add-to-gitignore  Automatically add installed files to .gitignore"
+    echo "  --help              Show this help message"
     echo ""
     echo "Environment variables:"
     echo "  PRPS_TARGET_DIR  Target directory for installation (required in batch mode)"
@@ -262,6 +312,7 @@ usage() {
     echo "  $0                                          # Interactive mode"
     echo "  PRPS_TARGET_DIR=/path/to/project $0 --batch       # Batch mode, skip conflicts"
     echo "  PRPS_TARGET_DIR=/path/to/project $0 --overwrite-all  # Batch mode, overwrite"
+    echo "  PRPS_TARGET_DIR=/path/to/project $0 --batch --add-to-gitignore  # Batch mode with gitignore"
 }
 
 # Main installation function
@@ -281,6 +332,10 @@ main() {
             --overwrite-all)
                 batch_mode=true
                 default_action="overwrite"
+                shift
+                ;;
+            --add-to-gitignore)
+                add_to_gitignore=true
                 shift
                 ;;
             --help|-h)
@@ -439,6 +494,18 @@ main() {
         echo ""
     fi
     
+    # Ask about gitignore if interactive and not already set
+    if [[ "$interactive_mode" == "true" ]] && [[ "$add_to_gitignore" != "true" ]]; then
+        print_info "Git Repository Configuration"
+        echo "The installed files (.claude, PROMPTS, PRPs, etc.) are specific to your local"
+        echo "development environment and typically should not be committed to your repository."
+        echo ""
+        if ask_yes_no "Would you like to add these files to your .gitignore?" "y"; then
+            add_to_gitignore=true
+        fi
+        echo ""
+    fi
+    
     # Step 4: Copy specific items
     print_info "Step 4: Copying PRPS tools..."
     copy_specific_items "$SCRIPT_DIR" "$target_dir"
@@ -456,6 +523,12 @@ main() {
     
     if [[ $target_sh_count -gt 0 ]]; then
         print_success "Made $target_sh_count shell script(s) executable in target directory"
+    fi
+    
+    # Add to gitignore if requested
+    if [[ "$add_to_gitignore" == "true" ]]; then
+        echo ""
+        add_items_to_gitignore "$target_dir"
     fi
     
     echo ""

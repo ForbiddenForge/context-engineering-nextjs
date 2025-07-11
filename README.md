@@ -27,6 +27,9 @@ This framework can be installed into any existing Next.js project. The installat
      - **Ask for each conflict** (recommended) - Review each file individually
      - **Skip all conflicts** - Keep your existing files unchanged
      - **Overwrite all conflicts** - Replace with framework files
+   - Choose whether to add installed files to .gitignore:
+     - **Recommended: Yes** - Prevents PRPS files from being committed to your repository
+     - These files are specific to your local development environment
 
 4. **What gets installed:**
    - `.claude/` directory with commands, hooks, and settings
@@ -59,8 +62,24 @@ PRPS_TARGET_DIR=/path/to/your/nextjs/project ./install.sh --batch
 PRPS_TARGET_DIR=/path/to/your/nextjs/project ./install.sh --overwrite-all
 ```
 
+**Option 3: Add installed files to .gitignore**
+```bash
+# Use --add-to-gitignore flag to automatically add the installed files to .gitignore
+# This prevents the PRPS files from being tracked in your repository
+PRPS_TARGET_DIR=/path/to/your/nextjs/project ./install.sh --batch --add-to-gitignore
+
+# Or in interactive mode
+./install.sh --add-to-gitignore
+```
+
 **Environment Variables:**
 - `PRPS_TARGET_DIR` - Required for non-interactive modes. Must be an absolute path to your target project.
+
+**Command Line Flags:**
+- `--batch` - Run in batch mode (skip all prompts, use defaults)
+- `--overwrite-all` - Run in batch mode and overwrite all conflicting files
+- `--add-to-gitignore` - Automatically add installed files to .gitignore
+- `--help` - Show help message
 
 **Examples:**
 ```bash
@@ -69,6 +88,9 @@ PRPS_TARGET_DIR=$(pwd) ./install.sh --batch
 
 # Install to specific project, overwrite everything
 PRPS_TARGET_DIR=/home/user/my-nextjs-app ./install.sh --overwrite-all
+
+# Install with gitignore update
+PRPS_TARGET_DIR=$(pwd) ./install.sh --batch --add-to-gitignore
 
 # View all available options
 ./install.sh --help
