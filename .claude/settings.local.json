@@ -64,9 +64,13 @@
       "Bash(/tmp/debug_install.sh:*)",
       "Bash(PRPS_TARGET_DIR=/tmp/test_install_target timeout 10 ./install.sh --overwrite-all)",
       "Bash(PRPS_TARGET_DIR=/tmp/test_install_target timeout 30 ./install.sh --overwrite-all)",
-      "Bash(timeout 5 cp -r /home/cryptox/code/context-engineering-nextjs/.claude /tmp/test_claude_copy)"
+      "Bash(timeout 5 cp -r /home/cryptox/code/context-engineering-nextjs/.claude /tmp/test_claude_copy)",
+      "Bash(true)",
+      "WebFetch(domain:appwrite.io)",
+      "Bash(pkill:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode" : "acceptEdits"
   },
   "model": "opus",
   "hooks": {
@@ -104,7 +108,6 @@
       }
     ]
   },
-  "confirmations": {
-    "enabled": true
-  }
+  "includeCoAuthoredBy" : false
+  
 }
