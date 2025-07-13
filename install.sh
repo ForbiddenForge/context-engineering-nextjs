@@ -215,7 +215,7 @@ copy_specific_items() {
 add_items_to_gitignore() {
     local target_dir="$1"
     local gitignore_file="$target_dir/.gitignore"
-    local items_to_add=(".claude/" "/examples" "PROMPTS/" "PRPs/" "CLAUDE.md")
+    local items_to_add=(".claude/" "examples/" "PROMPTS/" "PRPs/" "CLAUDE.md")
     local items_added=0
     
     print_info "Adding installed items to .gitignore..."
