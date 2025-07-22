@@ -1,4 +1,5 @@
 {
+  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Bash(rg:*)",
@@ -67,10 +68,13 @@
       "Bash(timeout 5 cp -r /home/cryptox/code/context-engineering-nextjs/.claude /tmp/test_claude_copy)",
       "Bash(true)",
       "WebFetch(domain:appwrite.io)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(sudo apt:*)",
+      "Bash(sudo apt install:*)",
+      "Bash(~/.local/bin/yq:*)"
     ],
     "deny": [],
-    "defaultMode" : "acceptEdits"
+    "defaultMode": "acceptEdits"
   },
   "model": "sonnet",
   "hooks": {
@@ -107,7 +111,5 @@
         ]
       }
     ]
-  },
-  "includeCoAuthoredBy" : false
-  
+  }
 }

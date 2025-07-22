@@ -61,15 +61,20 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
     exit 0  # Exit gracefully to not block Claude
 fi
 
-# Check if yq is available
-if ! command -v yq >/dev/null 2>&1; then
+# Check if yq is available (try multiple locations)
+YQ_CMD=""
+if command -v yq >/dev/null 2>&1; then
+    YQ_CMD="yq"
+elif [[ -x "$HOME/.local/bin/yq" ]]; then
+    YQ_CMD="$HOME/.local/bin/yq"
+else
     echo "Warning: yq not found, cannot parse ntfy config" >&2
     exit 0
 fi
 
 # Extract configuration with error handling
-NTFY_TOPIC=$(yq -r '.ntfy_topic // empty' "$CONFIG_FILE" 2>/dev/null || echo "")
-NTFY_SERVER=$(yq -r '.ntfy_server // "https://ntfy.sh"' "$CONFIG_FILE" 2>/dev/null || echo "https://ntfy.sh")
+NTFY_TOPIC=$($YQ_CMD -r '.ntfy_topic // ""' "$CONFIG_FILE" 2>/dev/null || echo "")
+NTFY_SERVER=$($YQ_CMD -r '.ntfy_server // "https://ntfy.sh"' "$CONFIG_FILE" 2>/dev/null || echo "https://ntfy.sh")
 
 # Validate required configuration
 if [[ -z "$NTFY_TOPIC" ]]; then
@@ -186,8 +191,12 @@ case "$EVENT_TYPE" in
     "notification")
         # Claude sent a notification - parse the payload if available
         if [[ -n "${CLAUDE_HOOK_PAYLOAD:-}" ]]; then
-            # Extract message from JSON payload
-            MESSAGE=$(echo "$CLAUDE_HOOK_PAYLOAD" | jq -r '.message // "Claude notification"' 2>/dev/null || echo "Claude notification")
+            # Extract message from JSON payload (use jq if available, fallback to basic parsing)
+            if command -v jq >/dev/null 2>&1; then
+                MESSAGE=$(echo "$CLAUDE_HOOK_PAYLOAD" | jq -r '.message // "Claude notification"' 2>/dev/null || echo "Claude notification")
+            else
+                MESSAGE="Claude notification"
+            fi
             
             # Check for error or warning indicators
             PRIORITY="default"
