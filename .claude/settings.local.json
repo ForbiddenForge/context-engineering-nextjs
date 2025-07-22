@@ -72,7 +72,7 @@
     "deny": [],
     "defaultMode" : "acceptEdits"
   },
-  "model": "opus",
+  "model": "sonnet",
   "hooks": {
     "PostToolUse": [
       {
