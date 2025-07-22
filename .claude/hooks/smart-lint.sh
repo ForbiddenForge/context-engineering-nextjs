@@ -5,12 +5,15 @@
 #   smart-lint.sh [options]
 #
 # DESCRIPTION
-#   Automatically detects project type and runs ALL quality checks.
+#   Automatically detects project type and runs quality checks with incremental linting.
+#   By default, only checks modified/staged files for faster performance.
 #   Every issue found is blocking - code must be 100% clean to proceed.
 #
 # OPTIONS
-#   --debug       Enable debug output
+#   --debug       Enable debug output and performance timing
 #   --fast        Skip slow checks (import cycles, security scans)
+#   --full        Force full project scan (disable incremental linting)
+#   --help        Show usage information
 #
 # EXIT CODES
 #   0 - Success (all checks passed - everything is ✅ GREEN)
@@ -122,11 +125,55 @@ detect_project_type() {
 
 # Get list of modified files (if available from git)
 get_modified_files() {
+    local files=()
+    
     if [[ -d .git ]] && command_exists git; then
-        # Get files modified in the last commit or currently staged/modified
-        git diff --name-only HEAD 2>/dev/null || true
-        git diff --cached --name-only 2>/dev/null || true
+        # Get currently staged files
+        while IFS= read -r file; do
+            [[ -n "$file" && -f "$file" ]] && files+=("$file")
+        done < <(git diff --cached --name-only --diff-filter=ACMR 2>/dev/null || true)
+        
+        # Get modified but unstaged files
+        while IFS= read -r file; do
+            [[ -n "$file" && -f "$file" ]] && files+=("$file")
+        done < <(git diff --name-only --diff-filter=ACMR 2>/dev/null || true)
+        
+        # Get untracked files that aren't ignored
+        while IFS= read -r file; do
+            [[ -n "$file" && -f "$file" ]] && files+=("$file")
+        done < <(git ls-files --others --exclude-standard 2>/dev/null || true)
+        
+        # Remove duplicates and return
+        printf '%s\n' "${files[@]}" | sort -u
     fi
+}
+
+# Filter files by language/extension
+filter_files_by_language() {
+    local language="$1"
+    shift
+    local files=("$@")
+    
+    case "$language" in
+        "go")
+            printf '%s\n' "${files[@]}" | grep -E '\.(go)$' || true
+            ;;
+        "python")
+            printf '%s\n' "${files[@]}" | grep -E '\.(py|pyi)$' || true
+            ;;
+        "javascript")
+            printf '%s\n' "${files[@]}" | grep -E '\.(js|jsx|ts|tsx|mjs|cjs)$' || true
+            ;;
+        "rust")
+            printf '%s\n' "${files[@]}" | grep -E '\.(rs)$' || true
+            ;;
+        "nix")
+            printf '%s\n' "${files[@]}" | grep -E '\.(nix)$' || true
+            ;;
+        *)
+            printf '%s\n' "${files[@]}"
+            ;;
+    esac
 }
 
 # Check if we should skip a file
@@ -227,7 +274,25 @@ lint_go() {
         return 0
     fi
     
-    log_info "Running Go formatting and linting..."
+    local files=("$@")
+    local go_files=()
+    
+    # If files provided, filter for Go files only
+    if [[ ${#files[@]} -gt 0 ]]; then
+        while IFS= read -r file; do
+            [[ -n "$file" ]] && go_files+=("$file")
+        done < <(filter_files_by_language "go" "${files[@]}")
+        
+        # Skip if no Go files to process
+        if [[ ${#go_files[@]} -eq 0 ]]; then
+            log_debug "No Go files to lint"
+            return 0
+        fi
+        
+        log_info "Running Go formatting and linting on ${#go_files[@]} file(s)..."
+    else
+        log_info "Running Go formatting and linting on entire project..."
+    fi
     
     # Check if Makefile exists with fmt and lint targets
     if [[ -f "Makefile" ]]; then
@@ -253,6 +318,99 @@ lint_go() {
             log_info "Using direct Go tools"
             
             # Format check
+            if [[ ${#go_files[@]} -gt 0 ]]; then
+                # Check specific files
+                local unformatted_files=$(printf '%s\n' "${go_files[@]}" | xargs gofmt -l 2>/dev/null || true)
+                
+                if [[ -n "$unformatted_files" ]]; then
+                    local fmt_output
+                    if ! fmt_output=$(printf '%s\n' "${go_files[@]}" | xargs gofmt -w 2>&1); then
+                        add_error "Go formatting failed"
+                        echo "$fmt_output" >&2
+                    fi
+                fi
+                
+                # Linting specific files
+                if command_exists golangci-lint; then
+                    local lint_output
+                    if ! lint_output=$(golangci-lint run --timeout=2m "${go_files[@]}" 2>&1); then
+                        add_error "golangci-lint found issues"
+                        echo "$lint_output" >&2
+                    fi
+                elif command_exists go; then
+                    local vet_output
+                    if ! vet_output=$(go vet "${go_files[@]}" 2>&1); then
+                        add_error "go vet found issues"
+                        echo "$vet_output" >&2
+                    fi
+                else
+                    log_error "No Go linting tools available - install golangci-lint or go"
+                fi
+            else
+                # Full project scan
+                local unformatted_files=$(gofmt -l . 2>/dev/null | grep -v vendor/ || true)
+                
+                if [[ -n "$unformatted_files" ]]; then
+                    local fmt_output
+                    if ! fmt_output=$(gofmt -w . 2>&1); then
+                        add_error "Go formatting failed"
+                        echo "$fmt_output" >&2
+                    fi
+                fi
+                
+                # Linting
+                if command_exists golangci-lint; then
+                    local lint_output
+                    if ! lint_output=$(golangci-lint run --timeout=2m 2>&1); then
+                        add_error "golangci-lint found issues"
+                        echo "$lint_output" >&2
+                    fi
+                elif command_exists go; then
+                    local vet_output
+                    if ! vet_output=$(go vet ./... 2>&1); then
+                        add_error "go vet found issues"
+                        echo "$vet_output" >&2
+                    fi
+                else
+                    log_error "No Go linting tools available - install golangci-lint or go"
+                fi
+            fi
+        fi
+    else
+        # No Makefile, use direct commands
+        log_info "Using direct Go tools"
+        
+        # Format check
+        if [[ ${#go_files[@]} -gt 0 ]]; then
+            # Check specific files
+            local unformatted_files=$(printf '%s\n' "${go_files[@]}" | xargs gofmt -l 2>/dev/null || true)
+            
+            if [[ -n "$unformatted_files" ]]; then
+                local fmt_output
+                if ! fmt_output=$(printf '%s\n' "${go_files[@]}" | xargs gofmt -w 2>&1); then
+                    add_error "Go formatting failed"
+                    echo "$fmt_output" >&2
+                fi
+            fi
+            
+            # Linting specific files
+            if command_exists golangci-lint; then
+                local lint_output
+                if ! lint_output=$(golangci-lint run --timeout=2m "${go_files[@]}" 2>&1); then
+                    add_error "golangci-lint found issues"
+                    echo "$lint_output" >&2
+                fi
+            elif command_exists go; then
+                local vet_output
+                if ! vet_output=$(go vet "${go_files[@]}" 2>&1); then
+                    add_error "go vet found issues"
+                    echo "$vet_output" >&2
+                fi
+            else
+                log_error "No Go linting tools available - install golangci-lint or go"
+            fi
+        else
+            # Full project scan
             local unformatted_files=$(gofmt -l . 2>/dev/null | grep -v vendor/ || true)
             
             if [[ -n "$unformatted_files" ]]; then
@@ -280,37 +438,6 @@ lint_go() {
                 log_error "No Go linting tools available - install golangci-lint or go"
             fi
         fi
-    else
-        # No Makefile, use direct commands
-        log_info "Using direct Go tools"
-        
-        # Format check
-        local unformatted_files=$(gofmt -l . 2>/dev/null | grep -v vendor/ || true)
-        
-        if [[ -n "$unformatted_files" ]]; then
-            local fmt_output
-            if ! fmt_output=$(gofmt -w . 2>&1); then
-                add_error "Go formatting failed"
-                echo "$fmt_output" >&2
-            fi
-        fi
-        
-        # Linting
-        if command_exists golangci-lint; then
-            local lint_output
-            if ! lint_output=$(golangci-lint run --timeout=2m 2>&1); then
-                add_error "golangci-lint found issues"
-                echo "$lint_output" >&2
-            fi
-        elif command_exists go; then
-            local vet_output
-            if ! vet_output=$(go vet ./... 2>&1); then
-                add_error "go vet found issues"
-                echo "$vet_output" >&2
-            fi
-        else
-            log_error "No Go linting tools available - install golangci-lint or go"
-        fi
     fi
 }
 
@@ -324,15 +451,40 @@ lint_python() {
         return 0
     fi
     
-    log_info "Running Python linters..."
+    local files=("$@")
+    local python_files=()
+    
+    # If files provided, filter for Python files only
+    if [[ ${#files[@]} -gt 0 ]]; then
+        while IFS= read -r file; do
+            [[ -n "$file" ]] && python_files+=("$file")
+        done < <(filter_files_by_language "python" "${files[@]}")
+        
+        # Skip if no Python files to process
+        if [[ ${#python_files[@]} -eq 0 ]]; then
+            log_debug "No Python files to lint"
+            return 0
+        fi
+        
+        log_info "Running Python linters on ${#python_files[@]} file(s)..."
+    else
+        log_info "Running Python linters on entire project..."
+    fi
     
     # Black formatting
     if command_exists black; then
+        local black_target
+        if [[ ${#python_files[@]} -gt 0 ]]; then
+            black_target="${python_files[@]}"
+        else
+            black_target="."
+        fi
+        
         local black_output
-        if ! black_output=$(black . --check 2>&1); then
+        if ! black_output=$(black $black_target --check 2>&1); then
             # Apply formatting and capture any errors
             local format_output
-            if ! format_output=$(black . 2>&1); then
+            if ! format_output=$(black $black_target 2>&1); then
                 add_error "Python formatting failed"
                 echo "$format_output" >&2
             fi
@@ -341,14 +493,28 @@ lint_python() {
     
     # Linting
     if command_exists ruff; then
+        local ruff_target
+        if [[ ${#python_files[@]} -gt 0 ]]; then
+            ruff_target="${python_files[@]}"
+        else
+            ruff_target="."
+        fi
+        
         local ruff_output
-        if ! ruff_output=$(ruff check --fix . 2>&1); then
+        if ! ruff_output=$(ruff check --fix $ruff_target 2>&1); then
             add_error "Ruff found issues"
             echo "$ruff_output" >&2
         fi
     elif command_exists flake8; then
+        local flake8_target
+        if [[ ${#python_files[@]} -gt 0 ]]; then
+            flake8_target="${python_files[@]}"
+        else
+            flake8_target="."
+        fi
+        
         local flake8_output
-        if ! flake8_output=$(flake8 . 2>&1); then
+        if ! flake8_output=$(flake8 $flake8_target 2>&1); then
             add_error "Flake8 found issues"
             echo "$flake8_output" >&2
         fi
@@ -363,37 +529,71 @@ lint_javascript() {
         return 0
     fi
     
-    log_info "Running JavaScript/TypeScript linters..."
+    local files=("$@")
+    local js_files=()
+    
+    # If files provided, filter for JavaScript/TypeScript files only
+    if [[ ${#files[@]} -gt 0 ]]; then
+        while IFS= read -r file; do
+            [[ -n "$file" ]] && js_files+=("$file")
+        done < <(filter_files_by_language "javascript" "${files[@]}")
+        
+        # Skip if no JS/TS files to process
+        if [[ ${#js_files[@]} -eq 0 ]]; then
+            log_debug "No JavaScript/TypeScript files to lint"
+            return 0
+        fi
+        
+        log_info "Running JavaScript/TypeScript linters on ${#js_files[@]} file(s)..."
+    else
+        log_info "Running JavaScript/TypeScript linters on entire project..."
+    fi
     
     # Check for ESLint
     if [[ -f "package.json" ]] && grep -q "eslint" package.json 2>/dev/null; then
         if command_exists npm; then
             local eslint_output
-            if ! eslint_output=$(npm run lint --if-present 2>&1); then
-                add_error "ESLint found issues"
-                echo "$eslint_output" >&2
+            if [[ ${#js_files[@]} -gt 0 ]]; then
+                # Run ESLint on specific files
+                if ! eslint_output=$(npx eslint "${js_files[@]}" --fix 2>&1); then
+                    add_error "ESLint found issues"
+                    echo "$eslint_output" >&2
+                fi
+            else
+                # Run ESLint via npm script (entire project)
+                if ! eslint_output=$(npm run lint --if-present 2>&1); then
+                    add_error "ESLint found issues"
+                    echo "$eslint_output" >&2
+                fi
             fi
         fi
     fi
     
     # Prettier
     if [[ -f ".prettierrc" ]] || [[ -f "prettier.config.js" ]] || [[ -f ".prettierrc.json" ]]; then
+        local prettier_target
+        if [[ ${#js_files[@]} -gt 0 ]]; then
+            prettier_target="${js_files[@]}"
+        else
+            prettier_target="."
+        fi
+        
         if command_exists prettier; then
             local prettier_output
-            if ! prettier_output=$(prettier --check . 2>&1); then
+            if ! prettier_output=$(prettier --check $prettier_target 2>&1); then
                 # Apply formatting and capture any errors
                 local format_output
-                if ! format_output=$(prettier --write . 2>&1); then
+                if ! format_output=$(prettier --write $prettier_target 2>&1); then
                     add_error "Prettier formatting failed"
                     echo "$format_output" >&2
                 fi
             fi
         elif command_exists npx; then
             local prettier_output
-            if ! prettier_output=$(npx prettier --check . 2>&1); then
+            if ! prettier_output=$(npx prettier --check $prettier_target 2>&1); then
                 # Apply formatting and capture any errors
                 local format_output
-                if ! format_output=$(npx prettier --write . 2>&1); then
+                if ! format_output=$(npx prettier --write $prettier_target 2>&1); then
                     add_error "Prettier formatting failed"
                     echo "$format_output" >&2
                 fi
@@ -410,9 +610,31 @@ lint_rust() {
         return 0
     fi
     
-    log_info "Running Rust linters..."
+    local files=("$@")
+    local rust_files=()
+    
+    # If files provided, filter for Rust files only
+    if [[ ${#files[@]} -gt 0 ]]; then
+        while IFS= read -r file; do
+            [[ -n "$file" ]] && rust_files+=("$file")
+        done < <(filter_files_by_language "rust" "${files[@]}")
+        
+        # Skip if no Rust files to process
+        if [[ ${#rust_files[@]} -eq 0 ]]; then
+            log_debug "No Rust files to lint"
+            return 0
+        fi
+        
+        log_info "Running Rust linters on ${#rust_files[@]} file(s)..."
+    else
+        log_info "Running Rust linters on entire project..."
+    fi
     
     if command_exists cargo; then
+        # Note: cargo fmt and clippy work on the entire Cargo project
+        # Individual file targeting is not as straightforward as other languages
+        # but we can still log which files triggered the check
+        
         local fmt_output
         if ! fmt_output=$(cargo fmt -- --check 2>&1); then
             # Apply formatting and capture any errors
@@ -441,33 +663,53 @@ lint_nix() {
         return 0
     fi
     
-    log_info "Running Nix linters..."
+    local files=("$@")
+    local nix_files=()
     
-    # Find all .nix files
-    local nix_files=$(find . -name "*.nix" -type f | grep -v -E "(result/|/nix/store/)" | head -20)
-    
-    if [[ -z "$nix_files" ]]; then
-        log_debug "No Nix files found"
-        return 0
+    # If files provided, filter for Nix files only
+    if [[ ${#files[@]} -gt 0 ]]; then
+        while IFS= read -r file; do
+            [[ -n "$file" ]] && nix_files+=("$file")
+        done < <(filter_files_by_language "nix" "${files[@]}")
+        
+        # Skip if no Nix files to process
+        if [[ ${#nix_files[@]} -eq 0 ]]; then
+            log_debug "No Nix files to lint"
+            return 0
+        fi
+        
+        log_info "Running Nix linters on ${#nix_files[@]} file(s)..."
+    else
+        log_info "Running Nix linters on entire project..."
+        
+        # Find all .nix files
+        while IFS= read -r file; do
+            [[ -n "$file" ]] && nix_files+=("$file")
+        done < <(find . -name "*.nix" -type f | grep -v -E "(result/|/nix/store/)" | head -20)
+        
+        if [[ ${#nix_files[@]} -eq 0 ]]; then
+            log_debug "No Nix files found"
+            return 0
+        fi
     fi
     
     # Check formatting with nixpkgs-fmt or alejandra
     if command_exists nixpkgs-fmt; then
         local fmt_output
-        if ! fmt_output=$(echo "$nix_files" | xargs nixpkgs-fmt --check 2>&1); then
+        if ! fmt_output=$(printf '%s\n' "${nix_files[@]}" | xargs nixpkgs-fmt --check 2>&1); then
             # Apply formatting and capture any errors
             local format_output
-            if ! format_output=$(echo "$nix_files" | xargs nixpkgs-fmt 2>&1); then
+            if ! format_output=$(printf '%s\n' "${nix_files[@]}" | xargs nixpkgs-fmt 2>&1); then
                 add_error "Nix formatting failed"
                 echo "$format_output" >&2
             fi
         fi
     elif command_exists alejandra; then
         local fmt_output
-        if ! fmt_output=$(echo "$nix_files" | xargs alejandra --check 2>&1); then
+        if ! fmt_output=$(printf '%s\n' "${nix_files[@]}" | xargs alejandra --check 2>&1); then
             # Apply formatting and capture any errors
             local format_output
-            if ! format_output=$(echo "$nix_files" | xargs alejandra 2>&1); then
+            if ! format_output=$(printf '%s\n' "${nix_files[@]}" | xargs alejandra 2>&1); then
                 add_error "Nix formatting failed"
                 echo "$format_output" >&2
             fi
@@ -477,9 +719,18 @@ lint_nix() {
     # Static analysis with statix
     if command_exists statix; then
         local statix_output
-        if ! statix_output=$(statix check 2>&1); then
-            add_error "Statix found issues"
-            echo "$statix_output" >&2
+        if [[ ${#files[@]} -gt 0 ]]; then
+            # Run statix on specific files
+            if ! statix_output=$(statix check "${nix_files[@]}" 2>&1); then
+                add_error "Statix found issues"
+                echo "$statix_output" >&2
+            fi
+        else
+            # Run statix on entire project
+            if ! statix_output=$(statix check 2>&1); then
+                add_error "Statix found issues"
+                echo "$statix_output" >&2
+            fi
         fi
     fi
     
@@ -492,6 +743,7 @@ lint_nix() {
 
 # Parse command line options
 FAST_MODE=false
+FORCE_FULL_SCAN=false
 while [[ $# -gt 0 ]]; do
     case $1 in
         --debug)
@@ -502,8 +754,22 @@ while [[ $# -gt 0 ]]; do
             FAST_MODE=true
             shift
             ;;
+        --full)
+            FORCE_FULL_SCAN=true
+            shift
+            ;;
+        --help)
+            echo "Usage: $0 [options]"
+            echo "Options:"
+            echo "  --debug    Enable debug output and timing"
+            echo "  --fast     Skip slow checks (import cycles, security scans)"
+            echo "  --full     Force full project scan (disable incremental linting)"
+            echo "  --help     Show this help message"
+            exit 0
+            ;;
         *)
             echo "Unknown option: $1" >&2
+            echo "Use --help for usage information"
             exit 2
             ;;
     esac
@@ -526,6 +792,26 @@ log_info "Project type: $PROJECT_TYPE"
 
 # Main execution
 main() {
+    # Get list of modified files for incremental linting
+    local modified_files=()
+    
+    # Check if we should force full scan or do incremental linting
+    if [[ "$FORCE_FULL_SCAN" == "true" ]]; then
+        log_info "Full project scan forced via --full flag"
+    else
+        while IFS= read -r file; do
+            [[ -n "$file" && ! $(should_skip_file "$file") ]] && modified_files+=("$file")
+        done < <(get_modified_files)
+        
+        # Log incremental vs full project linting
+        if [[ ${#modified_files[@]} -gt 0 ]]; then
+            log_info "Incremental linting: checking ${#modified_files[@]} modified file(s)"
+            log_debug "Files: ${modified_files[*]}"
+        else
+            log_info "No modified files detected, running full project scan"
+        fi
+    fi
+    
     # Handle mixed project types
     if [[ "$PROJECT_TYPE" == mixed:* ]]; then
         local types="${PROJECT_TYPE#mixed:}"
@@ -533,11 +819,11 @@ main() {
         
         for type in "${TYPE_ARRAY[@]}"; do
             case "$type" in
-                "go") lint_go ;;
-                "python") lint_python ;;
-                "javascript") lint_javascript ;;
-                "rust") lint_rust ;;
-                "nix") lint_nix ;;
+                "go") lint_go "${modified_files[@]}" ;;
+                "python") lint_python "${modified_files[@]}" ;;
+                "javascript") lint_javascript "${modified_files[@]}" ;;
+                "rust") lint_rust "${modified_files[@]}" ;;
+                "nix") lint_nix "${modified_files[@]}" ;;
             esac
             
             # Fail fast if configured
@@ -548,11 +834,11 @@ main() {
     else
         # Single project type
         case "$PROJECT_TYPE" in
-            "go") lint_go ;;
-            "python") lint_python ;;
-            "javascript") lint_javascript ;;
-            "rust") lint_rust ;;
-            "nix") lint_nix ;;
+            "go") lint_go "${modified_files[@]}" ;;
+            "python") lint_python "${modified_files[@]}" ;;
+            "javascript") lint_javascript "${modified_files[@]}" ;;
+            "rust") lint_rust "${modified_files[@]}" ;;
+            "nix") lint_nix "${modified_files[@]}" ;;
             "unknown") 
                 log_info "No recognized project type, skipping checks"
                 ;;
