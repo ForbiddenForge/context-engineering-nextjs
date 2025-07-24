@@ -145,10 +145,10 @@ Run `npm run test` and ensure:
 
 **TypeScript Quality Checklist:**
 
-- [ ] No `any` types - use `unknown` or proper types
-- [ ] No non-null assertions (`!`) without null checks
+- [ ] No any types - use unknown or proper types
+- [ ] No non-null assertions (!) without null checks
 - [ ] Proper discriminated unions for complex types
-- [ ] No type assertions (`as`) without justification
+- [ ] No type assertions (as) without justification
 - [ ] All props interfaces properly defined
 - [ ] Generic components properly typed
 - [ ] Event handlers properly typed
