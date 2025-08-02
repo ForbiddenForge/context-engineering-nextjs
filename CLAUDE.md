@@ -83,6 +83,20 @@ You have a team of specialized subagents you can invoke to handle specific tasks
    ---
    ```
 
+5. **File Maintenance Protocol**:
+   - **Check file size**: If `team_notes.md` exceeds 100KB or 500 lines, trigger cleanup
+   - **Archive old entries**: Before starting major work, if file is too large:
+     1. Create archive: `.claude/collab/archives/team_notes_YYYY-MM-DD_HH-MM.md`
+     2. Move all entries older than 7 days to archive (preserve lines 1-30)
+     3. Keep only recent entries in main file
+   - **Cleanup triggers**:
+     - When file size > 100KB
+     - When line count > 500
+     - When entries are older than 7 days
+     - When explicitly requested by user
+   - **Archive naming**: `team_notes_YYYY-MM-DD_HH-MM.md` (use current timestamp)
+   - **NEVER delete the first 30 lines** (contains instructions and format)
+
 ### 🔄 Project Awareness & Context
 
 - **Always read `.claude/PROJECT.md`** at the start of a new conversation to understand the project's architecture, goals, style, and constraints. Then say "I will spawn the relevant sub-agents for specialized tasks."
