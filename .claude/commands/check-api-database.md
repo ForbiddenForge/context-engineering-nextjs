@@ -11,12 +11,13 @@ When you run `/check-api-database`, you are REQUIRED to:
 
 1. **IDENTIFY** all API endpoints, database queries, and external service calls
 2. **OPTIMIZE EVERY SINGLE ONE** - not just report them!
-3. **USE MULTIPLE AGENTS** to optimize issues in parallel:
-   - Spawn one agent to consolidate duplicate API calls
-   - Spawn another to implement caching strategies
-   - Spawn more agents for query optimization
-   - Spawn agents for request batching
-   - Say: "I'll spawn multiple agents to optimize all these API/database issues in parallel"
+3. **USE MULTIPLE SPECIALIZED SUBAGENTS** to optimize issues in parallel:
+   - Use the backend-architect subagent to consolidate duplicate API calls and design efficient endpoints
+   - Use the database-architect subagent to optimize queries and implement proper indexing
+   - Use the performance-tester subagent to implement caching strategies and measure improvements
+   - Use the frontend-developer subagent to optimize client-side data fetching patterns
+   - Use the infrastructure-ops subagent to configure CDN and edge caching
+   - Say: "I'll use multiple specialized subagents to optimize all these API/database issues in parallel"
 4. **DO NOT STOP** until:
    - ✅ ALL redundant calls are eliminated
    - ✅ NO N+1 query problems exist
@@ -336,15 +337,15 @@ socket.on('update', (data) => {
 
 When inefficiencies are found:
 
-1. **IMMEDIATELY SPAWN AGENTS** to optimize in parallel:
+1. **IMMEDIATELY USE SPECIALIZED SUBAGENTS** to optimize in parallel:
    ```
-   "I found 47 duplicate API calls, 23 N+1 queries, and 15 uncached endpoints. I'll spawn agents to optimize:
-   - Agent 1: Consolidate duplicate API calls in components/
-   - Agent 2: Implement caching for user data endpoints
-   - Agent 3: Fix N+1 queries in post loading
-   - Agent 4: Batch API requests in dashboard
-   - Agent 5: Optimize database indexes
-   Let me tackle all of these in parallel..."
+   "I found 47 duplicate API calls, 23 N+1 queries, and 15 uncached endpoints. I'll use specialized subagents to optimize:
+   - Use the frontend-developer subagent to consolidate duplicate API calls in components/
+   - Use the performance-tester subagent to implement caching for user data endpoints
+   - Use the database-architect subagent to fix N+1 queries in post loading
+   - Use the backend-architect subagent to batch API requests in dashboard
+   - Use the database-architect subagent to optimize database indexes
+   Let me invoke these subagents to tackle all optimizations in parallel..."
    ```
 2. **OPTIMIZE EVERYTHING** - Address EVERY inefficiency
 3. **VERIFY** - Re-run performance checks after optimizations
@@ -379,7 +380,12 @@ I will now execute EVERY optimization check listed above and FIX ALL INEFFICIENC
 
 - ✅ Analyze all API and database usage patterns
 - ✅ Read API documentation to understand best practices
-- ✅ SPAWN MULTIPLE AGENTS to optimize in parallel
+- ✅ USE MULTIPLE SPECIALIZED SUBAGENTS to optimize in parallel:
+  - database-architect subagent for query optimization and indexing
+  - backend-architect subagent for API design and batching
+  - performance-tester subagent for caching and benchmarking
+  - frontend-developer subagent for client-side optimization
+  - infrastructure-ops subagent for CDN and edge caching
 - ✅ Keep working until EVERYTHING is efficient
 - ✅ Verify with performance metrics
 - ✅ Not stop until all checks show optimal status

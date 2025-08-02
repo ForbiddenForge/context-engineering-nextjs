@@ -11,12 +11,13 @@ When you run `/check`, you are REQUIRED to:
 
 1. **IDENTIFY** all errors, warnings, and issues
 2. **FIX EVERY SINGLE ONE** - not just report them!
-3. **USE MULTIPLE AGENTS** to fix issues in parallel:
-   - Spawn one agent to fix ESLint issues
-   - Spawn another to fix TypeScript errors
-   - Spawn more agents for test failures
-   - Spawn agents for accessibility violations
-   - Say: "I'll spawn multiple agents to fix all these issues in parallel"
+3. **USE MULTIPLE SPECIALIZED SUBAGENTS** to fix issues in parallel:
+   - Use the test-writer-fixer subagent to fix failing tests and improve coverage
+   - Use the frontend-developer subagent to fix ESLint issues and React warnings
+   - Use the nextjs-specialist subagent to fix Next.js-specific errors
+   - Use the backend-architect subagent to fix API and TypeScript errors
+   - Use the performance-tester subagent to fix performance issues
+   - Say: "I'll use multiple specialized subagents to fix all these issues in parallel"
 4. **DO NOT STOP** until:
    - ✅ ALL ESLint rules pass with ZERO warnings
    - ✅ TypeScript compilation has ZERO errors
@@ -221,15 +222,15 @@ Run `npm run test` and ensure:
 
 When issues are found:
 
-1. **IMMEDIATELY SPAWN AGENTS** to fix issues in parallel:
+1. **IMMEDIATELY USE SPECIALIZED SUBAGENTS** to fix issues in parallel:
    ```
-   "I found 23 ESLint errors, 8 TypeScript errors, and 5 failing tests. I'll spawn agents to fix these:
-   - Agent 1: Fix ESLint errors in components/
-   - Agent 2: Fix TypeScript errors in lib/ and utils/
-   - Agent 3: Fix ESLint errors in pages/
-   - Agent 4: Fix failing test suites
-   - Agent 5: Fix accessibility violations
-   Let me tackle all of these in parallel..."
+   "I found 23 ESLint errors, 8 TypeScript errors, and 5 failing tests. I'll use specialized subagents to fix these:
+   - Use the frontend-developer subagent to fix ESLint errors in components/
+   - Use the backend-architect subagent to fix TypeScript errors in lib/ and utils/
+   - Use the nextjs-specialist subagent to fix ESLint errors in pages/
+   - Use the test-writer-fixer subagent to fix failing test suites
+   - Use the ui-designer subagent to fix accessibility violations
+   Let me invoke these subagents to tackle all issues in parallel..."
    ```
 2. **FIX EVERYTHING** - Address EVERY issue, no matter how "minor"
 3. **VERIFY** - Re-run all checks after fixes
@@ -274,7 +275,12 @@ The code is ready when:
 I will now execute EVERY check listed above and FIX ALL ISSUES. I will:
 
 - ✅ Run all linting and type checks
-- ✅ SPAWN MULTIPLE AGENTS to fix issues in parallel
+- ✅ USE MULTIPLE SPECIALIZED SUBAGENTS to fix issues in parallel:
+  - test-writer-fixer subagent for test failures and coverage
+  - frontend-developer subagent for React and ESLint issues
+  - nextjs-specialist subagent for Next.js specific problems
+  - backend-architect subagent for TypeScript and API errors
+  - performance-tester subagent for performance optimizations
 - ✅ Keep working until EVERYTHING passes
 - ✅ Verify in browser with DevTools
 - ✅ Not stop until all checks show passing status

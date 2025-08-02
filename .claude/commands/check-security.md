@@ -11,12 +11,13 @@ When you run `/security-check`, you are REQUIRED to:
 
 1. **IDENTIFY** all security vulnerabilities, exposures, and risks
 2. **FIX EVERY SINGLE ONE** - not just report them!
-3. **USE MULTIPLE AGENTS** to fix security issues in parallel:
-   - Spawn one agent to fix authentication vulnerabilities
-   - Spawn another to secure API endpoints
-   - Spawn more agents for input validation issues
-   - Spawn agents for dependency vulnerabilities
-   - Say: "I'll spawn multiple agents to fix all these security issues in parallel"
+3. **USE MULTIPLE SUBAGENTS** to fix security issues in parallel:
+   - Use the security-guardian subagent to audit and fix authentication vulnerabilities
+   - Use the backend-architect subagent to secure API endpoints and database queries
+   - Use the frontend-developer subagent to fix XSS and input validation issues
+   - Use the infrastructure-ops subagent to configure security headers and HTTPS
+   - Use the test-writer-fixer subagent to create security test suites
+   - Say: "I'll use multiple specialized subagents to fix all these security issues in parallel"
 4. **DO NOT STOP** until:
    - ✅ ALL sensitive data is secured
    - ✅ NO credentials exposed in frontend
@@ -320,15 +321,15 @@ npm run test:security  # Security-focused test suites
 
 When security vulnerabilities are found:
 
-1. **IMMEDIATELY SPAWN AGENTS** to fix vulnerabilities in parallel:
+1. **IMMEDIATELY USE SPECIALIZED SUBAGENTS** to fix vulnerabilities in parallel:
    ```
-   "I found API keys exposed in 5 files, 12 unvalidated inputs, and 3 XSS vulnerabilities. I'll spawn agents to fix these:
-   - Agent 1: Secure API keys and move to environment variables
-   - Agent 2: Add input validation to all API endpoints
-   - Agent 3: Fix XSS vulnerabilities in components
-   - Agent 4: Update dependencies with security patches
-   - Agent 5: Configure security headers
-   Let me tackle all of these in parallel..."
+   "I found API keys exposed in 5 files, 12 unvalidated inputs, and 3 XSS vulnerabilities. I'll use specialized subagents to fix these:
+   - Use the security-guardian subagent to secure API keys and move to environment variables
+   - Use the backend-architect subagent to add input validation to all API endpoints  
+   - Use the frontend-developer subagent to fix XSS vulnerabilities in components
+   - Use the infrastructure-ops subagent to update dependencies and configure security headers
+   - Use the test-writer-fixer subagent to add security tests
+   Let me invoke these subagents to tackle all issues in parallel..."
    ```
 2. **SECURE EVERYTHING** - Address EVERY vulnerability, no matter how "minor"
 3. **VERIFY** - Re-run all security checks after fixes
@@ -362,7 +363,12 @@ The code is secure when:
 I will now execute EVERY security check listed above and FIX ALL VULNERABILITIES. I will:
 
 - ✅ Scan for all exposed secrets and secure them
-- ✅ SPAWN MULTIPLE AGENTS to fix vulnerabilities in parallel
+- ✅ USE MULTIPLE SPECIALIZED SUBAGENTS to fix vulnerabilities in parallel:
+  - security-guardian subagent for authentication and encryption
+  - backend-architect subagent for API and database security
+  - frontend-developer subagent for XSS and CSRF protection
+  - infrastructure-ops subagent for security headers and SSL/TLS
+  - test-writer-fixer subagent for security test coverage
 - ✅ Keep working until EVERYTHING is secure
 - ✅ Verify with security tools and manual testing
 - ✅ Not stop until all security checks show passing status

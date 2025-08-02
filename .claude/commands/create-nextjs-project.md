@@ -150,7 +150,13 @@ Ensure quality from day one:
 ## 💪 EXECUTION GUIDELINES
 
 ### DO:
-- **USE AGENTS** for parallel PRP execution when possible
+- **USE SPECIALIZED SUBAGENTS** for parallel PRP execution:
+  - Use the nextjs-specialist subagent for Next.js setup and configuration
+  - Use the frontend-developer subagent for React components and state management
+  - Use the backend-architect subagent for API design and data layer
+  - Use the ui-designer subagent for design system and component library
+  - Use the test-writer-fixer subagent for testing infrastructure
+  - Use the infrastructure-ops subagent for CI/CD and deployment setup
 - **CREATE** `.claude/PROJECT.md` with complete project context
 - **IMPLEMENT** git hooks from the start
 - **SET UP** CI/CD pipeline basics
@@ -212,6 +218,14 @@ Excellent! Based on your requirements, I'll architect a Next.js task management 
 
 Here are the 6 PRPs I'll generate for systematic implementation:
 [Lists PRPs...]
+
+I'll use specialized subagents to execute these PRPs efficiently:
+- Use the nextjs-specialist subagent to set up the project foundation with App Router
+- Use the backend-architect subagent to design the database schema and API structure
+- Use the ui-designer subagent to create the design system and component library
+- Use the frontend-developer subagent to implement the task management features
+- Use the security-guardian subagent to implement authentication and authorization
+- Use the test-writer-fixer subagent to set up comprehensive testing
 ```
 
 ## 🔥 FINAL REMINDER
