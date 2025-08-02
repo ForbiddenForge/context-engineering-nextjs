@@ -20,6 +20,12 @@ Generate or update the PROJECT.md file in the .claude directory to establish com
    - Check for framework/library usage (Next.js version, routing approach)
    - Identify testing frameworks and build tools
 
+3. **Use Specialized Subagents for Deep Analysis**
+   - Use the nextjs-specialist subagent to analyze Next.js-specific patterns and best practices
+   - Use the backend-architect subagent to document API structure and data flow
+   - Use the frontend-developer subagent to analyze component patterns and state management
+   - Use the test-writer-fixer subagent to document testing conventions and coverage
+
 ## Research Process
 
 1. **Project Structure Analysis**
@@ -183,11 +189,13 @@ src/
    - Read sample components to understand patterns
    - Check test files for testing conventions
    - Review configuration files
+   - Use the trend-researcher subagent to identify modern patterns and best practices in use
 
 2. **Document Findings**
    - Be specific about versions and configurations
    - Include code examples from the actual project
    - Note any inconsistencies or technical debt
+   - Use the analytics-reporter subagent to analyze code metrics and patterns
 
 3. **Structure for AI Consumption**
    - Make it scannable with clear headings

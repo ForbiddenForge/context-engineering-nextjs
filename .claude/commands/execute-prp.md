@@ -18,8 +18,13 @@ You are tasked with implementing: $ARGUMENTS
 
 For complex features, say: "Let me ultrathink about this architecture and component design before proposing a solution."
 
-**USE MULTIPLE model AGENTS** when the feature has independent parts:
-"I'll spawn model agents to tackle different aspects of this feature and output their thinking instead of summarizing. I'll use the Claude Sonnet model for each of these agents"
+**USE MULTIPLE SPECIALIZED SUBAGENTS** when the feature has independent parts:
+"I'll use specialized subagents to tackle different aspects of this feature:
+- Use the frontend-developer subagent for React component implementation
+- Use the nextjs-specialist subagent for Next.js-specific features
+- Use the backend-architect subagent for API design and integration
+- Use the test-writer-fixer subagent for comprehensive test coverage
+- Use the ui-designer subagent for user interface and accessibility"
 
 Consult CLAUDE.md IMMEDIATELY and follow it EXACTLY.
 
@@ -131,6 +136,7 @@ The pre-commit hooks will verify EVERYTHING. They will:
    - Identify reusable components
    - Check design system compliance
    - Review similar implementations
+   - Use the ux-researcher subagent to understand user needs if implementing new UX patterns
 
 2. **Planning Phase:**
 
@@ -138,6 +144,7 @@ The pre-commit hooks will verify EVERYTHING. They will:
    - State management approach
    - API integration plan
    - Testing strategy
+   - Use the sprint-prioritizer subagent to break down complex features into manageable tasks
 
 3. **Implementation Phase:**
 
@@ -146,6 +153,8 @@ The pre-commit hooks will verify EVERYTHING. They will:
    - Test each component in isolation
    - Integrate and test full feature
    - Verify accessibility
+   - Use the whimsy-injector subagent after UI implementation to add delightful touches
+   - Use the performance-tester subagent to validate performance metrics
 
 4. **Documentation Phase:**
    - Update .claude/TODO.md with completed task status
