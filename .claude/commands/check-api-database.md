@@ -11,13 +11,19 @@ When you run `/check-api-database`, you are REQUIRED to:
 
 1. **IDENTIFY** all API endpoints, database queries, and external service calls
 2. **OPTIMIZE EVERY SINGLE ONE** - not just report them!
-3. **USE MULTIPLE SPECIALIZED SUBAGENTS** to optimize issues in parallel:
-   - Use the backend-architect subagent to consolidate duplicate API calls and design efficient endpoints
-   - Use the database-architect subagent to optimize queries and implement proper indexing
-   - Use the performance-tester subagent to implement caching strategies and measure improvements
-   - Use the frontend-developer subagent to optimize client-side data fetching patterns
-   - Use the infrastructure-ops subagent to configure CDN and edge caching
-   - Say: "I'll use multiple specialized subagents to optimize all these API/database issues in parallel"
+3. **MANDATORY: USE MULTIPLE SPECIALIZED SUB-AGENTS** to optimize issues in parallel:
+   - **backend-architect**: Consolidate duplicate API calls, design efficient endpoints, optimize server logic
+   - **database-architect**: Optimize queries, implement proper indexing, resolve N+1 problems
+   - **performance-tester**: Implement caching strategies, measure performance improvements, validate optimizations
+   - **frontend-developer**: Optimize client-side data fetching patterns, implement request batching
+   - **infrastructure-ops**: Configure CDN, edge caching, and deployment optimizations
+   - Say: "I'll use multiple specialized sub-agents to optimize all these API/database issues in parallel"
+
+   **Sub-Agent Collaboration Protocol:**
+   - All agents MUST read `.claude/collab/team_notes.md` before starting optimization work
+   - All agents MUST append optimization findings and performance improvements to team_notes.md
+   - Use standard format with performance metrics, before/after comparisons, and impact analysis
+   - Coordinate to ensure optimizations don't conflict and compound effectiveness
 4. **DO NOT STOP** until:
    - ✅ ALL redundant calls are eliminated
    - ✅ NO N+1 query problems exist

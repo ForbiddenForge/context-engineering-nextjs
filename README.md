@@ -2,7 +2,50 @@
 
 **Supercharge your Claude Code experience with Context Engineering**
 
-This repository provides a comprehensive framework for **Context Engineering** - Instead of relying on clever prompts, we provide AI agents with comprehensive context, structured workflows, and automated quality gates to consistently deliver production-ready code.
+This repository provides a comprehensive framework for **Context Engineering** with an **AI Sub-Agent Architecture** - Instead of relying on clever prompts, we provide AI agents with comprehensive context, structured workflows, and automated quality gates to consistently deliver production-ready code.
+
+## 🤖 AI Sub-Agent Architecture
+
+This framework leverages a **team of 22 specialized AI sub-agents** that work together to deliver production-quality code:
+
+### 🎨 Design Agents (3)
+- **ui-designer**: UI/UX design, component libraries, design systems
+- **ux-researcher**: User research, journey mapping, usability testing
+- **whimsy-injector**: Micro-interactions, delight engineering, personality injection
+
+### ⚙️ Engineering Agents (9)
+- **ai-engineer**: ML/AI features, LLM integration, recommendation systems
+- **backend-architect**: API design, server architecture, microservices
+- **database-architect**: Database design, query optimization, scaling
+- **frontend-developer**: React/Vue/Angular, state management, performance
+- **infrastructure-ops**: CI/CD, cloud infrastructure, monitoring
+- **mobile-app-builder**: Native iOS/Android, React Native
+- **nextjs-specialist**: Next.js 14+ expertise, App Router, Server Components
+- **rapid-prototyper**: MVP development, quick prototyping
+- **security-guardian**: Security audits, authentication, compliance
+- **test-writer-fixer**: Test creation, maintenance, coverage
+
+### 📊 Product Agents (3)
+- **feedback-synthesizer**: User feedback analysis, insight extraction
+- **sprint-prioritizer**: Sprint planning, feature prioritization
+- **trend-researcher**: Market trends, viral opportunities
+
+### 🎯 Project Management Agents (3)
+- **experiment-tracker**: A/B testing, feature flags, experiment analysis
+- **project-shipper**: Launch coordination, release management
+- **studio-producer**: Cross-team coordination, resource allocation
+
+### 🏢 Studio Operations Agents (4)
+- **analytics-reporter**: Metrics analysis, performance reporting
+- **finance-tracker**: Budget management, cost optimization
+- **legal-compliance-checker**: Privacy policies, regulatory compliance
+- **support-responder**: Customer support, documentation
+
+**Key Benefits:**
+- **Parallel Processing**: Multiple agents work simultaneously on different aspects
+- **Specialized Expertise**: Each agent is optimized for specific domain knowledge
+- **Quality Assurance**: Built-in collaboration and cross-validation
+- **Scalable Architecture**: Agents spawn dynamically based on task complexity
 
 ## 🚀 Quick Start
 
@@ -113,6 +156,26 @@ cat .claude/settings.local.json
 
 ### Example Workflow
 
+```mermaid
+graph TD
+    A[💡 Feature Idea] --> B[📝 /generate-prp-prompt]
+    B --> C[📋 /generate-prp]
+    C --> D[⚡ /execute-prp]
+    D --> E{🔍 Quality Gates}
+    E -->|❌ Issues Found| F[🛠️ /check-errors]
+    F --> G[🔒 /check-security]
+    G --> H[📊 /check-api-database]
+    H --> E
+    E -->|✅ All Pass| I[🚀 Production Ready]
+    
+    style A fill:#e1f5fe
+    style I fill:#e8f5e8
+    style E fill:#fff3e0
+    style F fill:#ffebee
+    style G fill:#ffebee
+    style H fill:#ffebee
+```
+
 Here's the complete workflow for implementing a new feature:
 
 ```bash
@@ -195,22 +258,26 @@ PRPs are detailed implementation blueprints that contain:
 
 ### Commands Summary
 
-| Command | Purpose |
-|---------|---------|
-| `/generate-prp-prompt` | Synthesize comprehensive prompts from feature descriptions |
-| `/generate-prp` | Create implementation blueprints (PRPs) from prompts |
-| `/execute-prp` | Implement features with strict quality standards |
-| `/check-errors` | Fix all code quality issues (linting, TypeScript, tests) |
-| `/check-security` | Audit and fix security vulnerabilities |
-| `/check-api-database` | Optimize API calls and database queries |
-| `/update-project` | Generate/update PROJECT.md documentation |
-| `/create-nextjs-project` | Initialize a production-ready Next.js project |
-| `/create-vite-project` | Initialize a production-ready Vite + React project |
+| Command | Purpose | Sub-Agents Used |
+|---------|---------|-----------------|
+| `/generate-prp-prompt` | Synthesize comprehensive prompts from feature descriptions | trend-researcher, ux-researcher |
+| `/generate-prp` | Create implementation blueprints (PRPs) from prompts | backend-architect, ui-designer, database-architect |
+| `/execute-prp` | Implement features with strict quality standards | frontend-developer, nextjs-specialist, backend-architect, test-writer-fixer, ui-designer, whimsy-injector, performance-tester |
+| `/check-errors` | Fix all code quality issues (linting, TypeScript, tests) | test-writer-fixer, frontend-developer, nextjs-specialist, backend-architect, performance-tester |
+| `/check-security` | Audit and fix security vulnerabilities | security-guardian, backend-architect, frontend-developer |
+| `/check-api-database` | Optimize API calls and database queries | database-architect, backend-architect, performance-tester |
+| `/update-project` | Generate/update PROJECT.md documentation | backend-architect, frontend-developer |
+| `/create-nextjs-project` | Initialize a production-ready Next.js project | rapid-prototyper, nextjs-specialist, ui-designer, backend-architect |
+| `/create-vite-project` | Initialize a production-ready Vite + React project | rapid-prototyper, frontend-developer, ui-designer, performance-tester |
 
 ### Core Workflow Commands
 
 #### `/generate-prp-prompt <description>`
 Synthesizes comprehensive prompts by combining templates with your feature description.
+
+**Sub-Agents Used:**
+- **trend-researcher**: Analyzes market trends and viral opportunities for feature validation
+- **ux-researcher**: Provides user research insights and journey mapping context
 
 **Features:**
 - Combines templates with your specific requirements
@@ -228,6 +295,11 @@ Synthesizes comprehensive prompts by combining templates with your feature descr
 #### `/generate-prp <prompt-file>`
 Generates multiple numbered PRPs from feature descriptions, breaking complex features into manageable, focused implementation chunks.
 
+**Sub-Agents Used:**
+- **backend-architect**: Designs API structure and data flow architecture
+- **ui-designer**: Creates component hierarchy and design system integration
+- **database-architect**: Plans data models and query optimization strategies
+
 **Features:**
 - One major item per PRP
 - Dependency tracking between PRPs
@@ -243,6 +315,15 @@ Generates multiple numbered PRPs from feature descriptions, breaking complex fea
 
 #### `/execute-prp <prp-file>`
 Implements features from PRPs with strict quality standards and automated validation.
+
+**Sub-Agents Used:**
+- **frontend-developer**: React component implementation and optimization
+- **nextjs-specialist**: Next.js 14+ App Router and Server Components
+- **backend-architect**: API endpoints and server-side logic
+- **test-writer-fixer**: Comprehensive test coverage and validation
+- **ui-designer**: Design system compliance and accessibility
+- **whimsy-injector**: Micro-interactions and delightful user experiences
+- **performance-tester**: Load testing and optimization validation
 
 **Mandatory Workflow:**
 1. **Research Phase** - Analyze existing codebase patterns
@@ -266,6 +347,13 @@ Implements features from PRPs with strict quality standards and automated valida
 #### `/check-errors`
 Comprehensive code quality verification and fixing using parallel agents.
 
+**Sub-Agents Used:**
+- **test-writer-fixer**: Fixes failing tests and improves test coverage
+- **frontend-developer**: Resolves ESLint issues and React warnings
+- **nextjs-specialist**: Fixes Next.js-specific errors and optimizations
+- **backend-architect**: Resolves TypeScript errors and API issues
+- **performance-tester**: Addresses performance bottlenecks and optimizations
+
 **Approach:** "FIXING task, not reporting task"
 - Spawns multiple agents to fix different error types in parallel
 - Zero tolerance for warnings or errors
@@ -287,6 +375,11 @@ Comprehensive code quality verification and fixing using parallel agents.
 
 #### `/check-security`
 Security audit and vulnerability remediation using parallel fixing agents.
+
+**Sub-Agents Used:**
+- **security-guardian**: Comprehensive security audits and vulnerability assessment
+- **backend-architect**: API security, authentication, and authorization fixes
+- **frontend-developer**: XSS prevention, input validation, and client-side security
 
 **Approach:** "FIXING task, not reporting task"
 - Spawns multiple agents to fix security issues in parallel
@@ -310,6 +403,11 @@ Security audit and vulnerability remediation using parallel fixing agents.
 
 #### `/check-api-database`
 Comprehensive API and database optimization for performance and cost reduction.
+
+**Sub-Agents Used:**
+- **database-architect**: Query optimization, indexing strategies, and data modeling
+- **backend-architect**: API design patterns, caching, and request optimization
+- **performance-tester**: Load testing, benchmarking, and performance validation
 
 **Approach:** "OPTIMIZATION task, not reporting task"
 - Spawns multiple agents to optimize different inefficiencies in parallel
@@ -336,6 +434,10 @@ Comprehensive API and database optimization for performance and cost reduction.
 #### `/update-project`
 Generates or updates `PROJECT.md` with comprehensive project context including tech stack, architecture, and conventions.
 
+**Sub-Agents Used:**
+- **backend-architect**: Analyzes API patterns, data flow, and system architecture
+- **frontend-developer**: Documents component patterns, state management, and UI conventions
+
 **Features:**
 - Auto-detects tech stack and dependencies
 - Documents architecture patterns
@@ -353,6 +455,12 @@ Generates or updates `PROJECT.md` with comprehensive project context including t
 
 #### `/create-nextjs-project <description>`
 Initialize a production-ready Next.js project from a vision, with zero compromises on quality.
+
+**Sub-Agents Used:**
+- **rapid-prototyper**: Quick project scaffolding and MVP development
+- **nextjs-specialist**: Next.js 14+ setup, App Router configuration, and optimization
+- **ui-designer**: Design system setup, component library integration
+- **backend-architect**: API architecture planning and database integration
 
 **Workflow:**
 1. **Information Gathering** - Clarifies technical decisions (App Router vs Pages, auth needs, etc.)
@@ -372,6 +480,12 @@ Initialize a production-ready Next.js project from a vision, with zero compromis
 
 #### `/create-vite-project <description>`
 Initialize a production-ready Vite + React project with focus on performance and modern tooling.
+
+**Sub-Agents Used:**
+- **rapid-prototyper**: Fast project initialization and feature scaffolding
+- **frontend-developer**: React setup, state management, and component architecture
+- **ui-designer**: Design system integration and component library setup
+- **performance-tester**: Bundle optimization, code splitting, and performance validation
 
 **Workflow:**
 1. **Framework Selection** - React, Vue, Preact, or Vanilla options
@@ -690,18 +804,32 @@ vim .claude/commands/my-custom-command.md
 
 ### Multi-Agent Orchestration
 
-The framework supports spawning multiple agents for parallel problem-solving.
+The framework supports spawning multiple specialized agents for parallel problem-solving, with 22 different agent types optimized for specific domains.
 
 **Example:**
 ```bash
 # This command will spawn multiple agents to fix different error types
 /check-errors
+# Automatically invokes:
+# - test-writer-fixer for test failures
+# - frontend-developer for ESLint issues
+# - nextjs-specialist for Next.js errors
+# - backend-architect for TypeScript errors
+# - performance-tester for optimization issues
 ```
 
+**Agent Collaboration Features:**
+- **Centralized Communication**: All agents collaborate through `.claude/collab/team_notes.md`
+- **Context Sharing**: Agents read and append findings to prevent duplicate work
+- **Specialized Expertise**: Each agent optimized for specific technical domains
+- **Parallel Processing**: Multiple agents work simultaneously on independent tasks
+- **Quality Cross-Validation**: Agents validate each other's work
+
 **Benefits:**
-- Faster resolution of complex issues
-- Parallel processing of independent tasks
-- Specialized agents for specific error types
+- **10x Faster Resolution**: Parallel processing of complex issues
+- **Domain Expertise**: Specialized knowledge for each technical area
+- **Zero Context Loss**: Persistent collaboration and knowledge sharing
+- **Scalable Architecture**: Agents spawn dynamically based on task complexity
 
 ### Custom Validation Gates
 
@@ -746,8 +874,10 @@ This framework embodies the philosophy that **context beats cleverness**. Instea
 
 **Key Principles:**
 - **Context Engineering > Prompt Engineering**
+- **Multi-Agent Collaboration > Single Agent Limitations**
+- **Specialized Expertise > General Purpose**
 - **Validation Loops > Hope and Pray**
-- **Parallel Agents > Sequential Bottlenecks**
+- **Parallel Processing > Sequential Bottlenecks**
 - **Zero Tolerance > Good Enough**
 - **Production Ready > Proof of Concept**
 

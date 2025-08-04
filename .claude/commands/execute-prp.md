@@ -18,13 +18,21 @@ You are tasked with implementing: $ARGUMENTS
 
 For complex features, say: "Let me ultrathink about this architecture and component design before proposing a solution."
 
-**USE MULTIPLE SPECIALIZED SUBAGENTS** when the feature has independent parts:
-"I'll use specialized subagents to tackle different aspects of this feature:
-- Use the frontend-developer subagent for React component implementation
-- Use the nextjs-specialist subagent for Next.js-specific features
-- Use the backend-architect subagent for API design and integration
-- Use the test-writer-fixer subagent for comprehensive test coverage
-- Use the ui-designer subagent for user interface and accessibility"
+**MANDATORY: USE MULTIPLE SPECIALIZED SUB-AGENTS** for parallel implementation:
+"I'll use specialized sub-agents to tackle different aspects of this feature:
+- **frontend-developer**: React component implementation and state management
+- **nextjs-specialist**: Next.js 14+ App Router, Server Components, and optimizations
+- **backend-architect**: API design, server-side logic, and database integration
+- **test-writer-fixer**: Comprehensive test coverage and validation
+- **ui-designer**: User interface design and accessibility compliance
+- **whimsy-injector**: Micro-interactions and delightful user experiences
+- **performance-tester**: Load testing and performance optimization validation
+
+**Sub-Agent Collaboration Protocol:**
+1. All agents MUST read `.claude/collab/team_notes.md` before starting work
+2. All agents MUST append their findings to team_notes.md when completing tasks
+3. Use the standard collaboration format for all entries
+4. Avoid duplicating work already completed by other agents"
 
 Consult CLAUDE.md IMMEDIATELY and follow it EXACTLY.
 

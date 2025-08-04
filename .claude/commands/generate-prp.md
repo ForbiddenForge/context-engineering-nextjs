@@ -4,6 +4,17 @@
 
 Generate multiple numbered PRPs for feature implementation, breaking down complex tasks into focused, manageable units. Each PRP should handle ONE major item with supporting minor items.
 
+**MANDATORY: USE SPECIALIZED SUB-AGENTS** for comprehensive PRP generation:
+- **backend-architect**: Design API structure, data flow architecture, and server-side requirements
+- **ui-designer**: Create component hierarchy, design system integration, and user interface specifications
+- **database-architect**: Plan data models, query optimization strategies, and database requirements
+
+**Sub-Agent Collaboration Protocol:**
+- All agents MUST read `.claude/collab/team_notes.md` before starting PRP generation
+- All agents MUST append their architectural findings and design decisions to team_notes.md
+- Use standard format with architecture diagrams, component specifications, and technical requirements
+- Coordinate to ensure PRPs are cohesive and dependencies are properly managed
+
 **IMPORTANT**: Tasks should be broken down so each PRP is focused and achievable in a single implementation pass. The AI agent only gets the context you provide in each PRP, so make each one self-contained.
 
 ## Initial Steps
