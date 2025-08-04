@@ -4,6 +4,41 @@
 
 This repository provides a comprehensive framework for **Context Engineering** with an **AI Sub-Agent Architecture** - Instead of relying on clever prompts, we provide AI agents with comprehensive context, structured workflows, and automated quality gates to consistently deliver production-ready code.
 
+## 📚 Table of Contents
+
+- [🤖 AI Sub-Agent Architecture](#-ai-sub-agent-architecture)
+- [🚀 Quick Start](#-quick-start)
+  - [Installation](#installation)
+  - [Installation Options](#installation-options)
+  - [Post-Installation](#post-installation)
+  - [Example Workflow](#example-workflow)
+- [📁 Repository Structure](#-repository-structure)
+- [🎯 Core Concepts](#-core-concepts)
+  - [What is Context Engineering?](#what-is-context-engineering)
+  - [Product Requirements Prompts (PRPs)](#product-requirements-prompts-prps)
+- [🛠️ Commands Reference](#️-commands-reference)
+  - [Commands Summary](#commands-summary)
+  - [Core Workflow Commands](#core-workflow-commands)
+  - [Quality Assurance Commands](#quality-assurance-commands)
+  - [Utility Commands](#utility-commands)
+  - [Project Creation Commands](#project-creation-commands)
+- [🎣 Hooks System](#-hooks-system)
+  - [Automated Quality Assurance](#automated-quality-assurance)
+  - [Customizing Hooks](#customizing-hooks)
+- [⚙️ Configuration](#️-configuration)
+  - [Claude Permissions](#claude-permissions-claudesettingslocaljson)
+  - [Customizing Configuration](#customizing-configuration)
+- [📋 Templates](#-templates)
+  - [PRP Base Template](#prp-base-template)
+  - [Prompt Templates](#prompt-templates)
+- [🔄 Best Practices](#-best-practices)
+- [🚨 Troubleshooting](#-troubleshooting)
+- [📚 Advanced Usage](#-advanced-usage)
+  - [Multi-Agent Orchestration](#multi-agent-orchestration)
+  - [Custom Validation Gates](#custom-validation-gates)
+  - [Integration with CI/CD](#integration-with-cicd)
+- [🎯 Philosophy](#-philosophy)
+
 ## 🤖 AI Sub-Agent Architecture
 
 This framework leverages a **team of 22 specialized AI sub-agents** that work together to deliver production-quality code:
