@@ -3,12 +3,22 @@ allowed-tools: all
 description: Synthesize a complete prompt by combining execute-prp.md with your arguments
 ---
 
-## 🎯 PROMPT SYNTHESIZER
+## 🎯 PROMPT SYNTHESIZER WITH SUB-AGENT ENHANCEMENT
+
+**MANDATORY: USE SPECIALIZED SUB-AGENTS** to enhance prompt quality:
+- **trend-researcher**: Analyze market trends, viral opportunities, and validate feature concepts
+- **ux-researcher**: Provide user research insights, journey mapping, and usability considerations
+
+**Sub-Agent Collaboration Protocol:**
+- All agents MUST read `.claude/collab/team_notes.md` before starting research
+- All agents MUST append research findings and market insights to team_notes.md
+- Use standard format with trend analysis, user insights, and competitive research
 
 You will create a **prompt file** by combining:
 
 1. The PROMPTS/INITIAL.md command template from .claude/commands/PROMPTS/INITIAL.md
 2. The specific task details provided here: $ARGUMENTS
+3. Market trends and user research insights from sub-agents
 
 ### 📋 YOUR TASK:
 

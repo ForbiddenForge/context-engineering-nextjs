@@ -4,10 +4,23 @@
 Transform a user's vision into a FULLY FUNCTIONING, PRODUCTION-READY Vite + React project with ZERO compromises on quality, architecture, or best practices.
 
 ## 🎯 WHAT THIS COMMAND DOES
+
+**MANDATORY: USE SPECIALIZED SUB-AGENTS** for comprehensive project creation:
+- **rapid-prototyper**: Fast project initialization, feature scaffolding, and trend integration
+- **frontend-developer**: React setup, state management configuration, and component architecture
+- **ui-designer**: Design system integration, component library setup, and accessibility compliance
+- **performance-tester**: Bundle optimization, code splitting strategies, and performance validation
+
+**Sub-Agent Collaboration Protocol:**
+- All agents MUST read `.claude/collab/team_notes.md` before starting project creation
+- All agents MUST append their setup decisions and performance optimizations to team_notes.md
+- Use standard format with build configurations, optimization strategies, and performance metrics
+- Coordinate to ensure optimal bundle size and development experience
+
 When you invoke `/create-vite-project`, you will:
 1. **EXTRACT** the complete project vision from the user
 2. **CLARIFY** any missing technical decisions
-3. **ARCHITECT** a robust, scalable solution
+3. **ARCHITECT** a robust, scalable solution (using specialized sub-agents)
 4. **GENERATE** multiple focused PRPs for systematic implementation
 5. **EXECUTE** the setup with military precision
 6. **VALIDATE** everything works perfectly

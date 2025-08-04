@@ -11,13 +11,19 @@ When you run `/security-check`, you are REQUIRED to:
 
 1. **IDENTIFY** all security vulnerabilities, exposures, and risks
 2. **FIX EVERY SINGLE ONE** - not just report them!
-3. **USE MULTIPLE SUBAGENTS** to fix security issues in parallel:
-   - Use the security-guardian subagent to audit and fix authentication vulnerabilities
-   - Use the backend-architect subagent to secure API endpoints and database queries
-   - Use the frontend-developer subagent to fix XSS and input validation issues
-   - Use the infrastructure-ops subagent to configure security headers and HTTPS
-   - Use the test-writer-fixer subagent to create security test suites
-   - Say: "I'll use multiple specialized subagents to fix all these security issues in parallel"
+3. **MANDATORY: USE MULTIPLE SPECIALIZED SUB-AGENTS** to fix security issues in parallel:
+   - **security-guardian**: Comprehensive security audits, vulnerability assessment, and compliance
+   - **backend-architect**: Secure API endpoints, database queries, and server-side security
+   - **frontend-developer**: Fix XSS vulnerabilities, input validation, and client-side security
+   - **infrastructure-ops**: Configure security headers, HTTPS, and deployment security
+   - **test-writer-fixer**: Create comprehensive security test suites and validation
+   - Say: "I'll use multiple specialized sub-agents to fix all these security issues in parallel"
+
+   **Sub-Agent Collaboration Protocol:**
+   - All agents MUST read `.claude/collab/team_notes.md` before starting security work
+   - All agents MUST append security findings and remediation actions to team_notes.md
+   - Use standard format with security-specific details and remediation steps
+   - Coordinate to avoid duplicate security fixes and ensure comprehensive coverage
 4. **DO NOT STOP** until:
    - ✅ ALL sensitive data is secured
    - ✅ NO credentials exposed in frontend
