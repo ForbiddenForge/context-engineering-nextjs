@@ -20,6 +20,7 @@ For complex features, say: "Let me ultrathink about this architecture and compon
 
 **MANDATORY: USE MULTIPLE SPECIALIZED SUB-AGENTS** for parallel implementation:
 "I'll use specialized sub-agents to tackle different aspects of this feature:
+
 - **frontend-developer**: React component implementation and state management
 - **nextjs-specialist**: Next.js 14+ App Router, Server Components, and optimizations
 - **backend-architect**: API design, server-side logic, and database integration
@@ -29,6 +30,7 @@ For complex features, say: "Let me ultrathink about this architecture and compon
 - **performance-tester**: Load testing and performance optimization validation
 
 **Sub-Agent Collaboration Protocol:**
+
 1. All agents MUST read `.claude/collab/team_notes.md` before starting work
 2. All agents MUST append their findings to team_notes.md when completing tasks
 3. Use the standard collaboration format for all entries
@@ -161,7 +163,6 @@ The pre-commit hooks will verify EVERYTHING. They will:
    - Test each component in isolation
    - Integrate and test full feature
    - Verify accessibility
-   - Use the whimsy-injector subagent after UI implementation to add delightful touches
    - Use the performance-tester subagent to validate performance metrics
 
 4. **Documentation Phase:**
