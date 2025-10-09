@@ -1,7 +1,11 @@
 {
+  "model": "opus",
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
+      "Edit(*)",
+      "MultiEdit(*)",
+      "Write(*)",
       "Bash(rg:*)",
       "Bash(grep:*)",
       "Bash(ls:*)",
@@ -71,24 +75,25 @@
       "Bash(pkill:*)",
       "Bash(sudo apt:*)",
       "Bash(sudo apt install:*)",
-      "Bash(~/.local/bin/yq:*)"
+      "Bash(~/.local/bin/yq:*)",
+      "Bash(kill:*)",
+      "Bash(for i in {1..3})",
+      "Bash(do echo \"=== Run $i ===\")",
+      "Bash(done)",
+      "Bash(NODE_OPTIONS=\"--max-old-space-size=512\" npm test -- src/lib/indicators/parallel/__tests__/performance-benchmark.test.ts --run --reporter=basic)",
+      "Bash(timeout 30s npm test:*)",
+      "Bash(timeout 90s npm test:*)",
+      "Bash(timeout 60s npm test:*)",
+      "Bash(timeout 45s npm test -- --run --reporter=basic)",
+      "Bash(ESLINT_NO_DEV_ERRORS=true npm run build)",
+      "Bash(./scripts/lint-fix-all.sh:*)",
+      "Bash(python3:*)",
+      "Bash(timeout 600 npm run build)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
   },
-  "model": "sonnet",
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/hooks/smart-lint.sh"
-          }
-        ]
-      }
-    ],
     "Notification": [
       {
         "matcher": "",

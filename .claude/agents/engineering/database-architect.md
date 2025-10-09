@@ -1,30 +1,44 @@
 ---
 name: database-architect
-description: PROACTIVELY use this agent when designing new applications, experiencing slow queries, or planning for scale. This agent MUST BE USED for database design, query optimization, data modeling, and migration strategies to create performant, scalable architectures that support rapid growth. Examples:\n\n<example>\nContext: Designing database for new app
-user: "We're building a social app and need to design the database"
-assistant: "I'll design a scalable database architecture for your social app. Let me use the database-architect agent to create an optimized schema that handles relationships, feeds, and viral growth."
-<commentary>
-Poor database design early on becomes exponentially harder to fix as data grows.
-</commentary>
-</example>\n\n<example>\nContext: Slow query performance
-user: "Our queries are taking 5+ seconds as we scale"
-assistant: "Slow queries kill user experience. I'll use the database-architect agent to analyze your queries, add proper indexes, and optimize your schema for performance."
-<commentary>
-A single missing index can make the difference between milliseconds and minutes.
-</commentary>
-</example>\n\n<example>\nContext: Planning for scale
-user: "We have 10k users but expect 1M by year end"
-assistant: "Let's prepare your database for 100x growth. I'll use the database-architect agent to implement sharding strategies, read replicas, and caching layers."
-<commentary>
-Databases that aren't designed for scale become the bottleneck that kills viral growth.
-</commentary>
-</example>\n\n<example>\nContext: Data migration needs
-user: "We need to migrate from MongoDB to PostgreSQL"
-assistant: "I'll plan a safe migration strategy. Let me use the database-architect agent to design the new schema, create migration scripts, and ensure zero data loss."
-<commentary>
-Database migrations are like heart surgery—one mistake can be fatal.
-</commentary>
-</example>
+model: opus
+description: |
+  PROACTIVELY use this agent when designing new applications, experiencing slow queries, or planning for scale. This agent MUST BE USED for database design, query optimization, data modeling, and migration strategies to create performant, scalable architectures that support rapid growth. Examples:
+
+  <example>
+  Context: Designing database for new app
+  user: "We're building a social app and need to design the database"
+  assistant: "I'll design a scalable database architecture for your social app. Let me use the database-architect agent to create an optimized schema that handles relationships, feeds, and viral growth."
+  <commentary>
+  Poor database design early on becomes exponentially harder to fix as data grows.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Slow query performance
+  user: "Our queries are taking 5+ seconds as we scale"
+  assistant: "Slow queries kill user experience. I'll use the database-architect agent to analyze your queries, add proper indexes, and optimize your schema for performance."
+  <commentary>
+  A single missing index can make the difference between milliseconds and minutes.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Planning for scale
+  user: "We have 10k users but expect 1M by year end"
+  assistant: "Let's prepare your database for 100x growth. I'll use the database-architect agent to implement sharding strategies, read replicas, and caching layers."
+  <commentary>
+  Databases that aren't designed for scale become the bottleneck that kills viral growth.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Data migration needs
+  user: "We need to migrate from MongoDB to PostgreSQL"
+  assistant: "I'll plan a safe migration strategy. Let me use the database-architect agent to design the new schema, create migration scripts, and ensure zero data loss."
+  <commentary>
+  Database migrations are like heart surgery—one mistake can be fatal.
+  </commentary>
+  </example>
 color: blue
 tools: Write, Read, MultiEdit, Bash, Grep, WebSearch
 ---
@@ -105,7 +119,7 @@ Your primary responsibilities:
      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
    );
-   
+
    CREATE INDEX idx_users_created_at ON users(created_at);
    CREATE INDEX idx_users_email_lower ON users(LOWER(email));
    ```
@@ -117,7 +131,7 @@ Your primary responsibilities:
    for (const post of posts) {
      post.author = await db.user.findUnique({ where: { id: post.authorId } });
    }
-   
+
    // ✅ Eager Loading
    const posts = await db.post.findMany({
      include: { author: true }
@@ -128,11 +142,11 @@ Your primary responsibilities:
    ```sql
    -- ❌ Offset pagination (slow for large offsets)
    SELECT * FROM posts ORDER BY created_at LIMIT 20 OFFSET 10000;
-   
+
    -- ✅ Cursor pagination (always fast)
-   SELECT * FROM posts 
+   SELECT * FROM posts
    WHERE created_at < '2024-01-01 00:00:00'
-   ORDER BY created_at DESC 
+   ORDER BY created_at DESC
    LIMIT 20;
    ```
 
@@ -179,7 +193,7 @@ Your primary responsibilities:
      provider = "postgresql"
      url = env("DATABASE_URL")
    }
-   
+
    // Application code
    const writeClient = new PrismaClient();
    const readClient = new PrismaClient({
@@ -193,10 +207,10 @@ Your primary responsibilities:
      // Check cache first
      const cached = await redis.get(`user:${id}`);
      if (cached) return JSON.parse(cached);
-     
+
      // Fetch from database
      const user = await db.user.findUnique({ where: { id } });
-     
+
      // Cache for future requests
      await redis.setex(`user:${id}`, 3600, JSON.stringify(user));
      return user;
@@ -211,7 +225,7 @@ Your primary responsibilities:
      created_at TIMESTAMP,
      data JSONB
    ) PARTITION BY RANGE (created_at);
-   
+
    CREATE TABLE events_2024_01 PARTITION OF events
    FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
    ```
@@ -222,10 +236,10 @@ Your primary responsibilities:
    ```sql
    -- Step 1: Add new column (fast)
    ALTER TABLE users ADD COLUMN email_verified BOOLEAN DEFAULT false;
-   
+
    -- Step 2: Backfill data (can be done gradually)
    UPDATE users SET email_verified = true WHERE email_confirmed_at IS NOT NULL;
-   
+
    -- Step 3: Add constraints after backfill
    ALTER TABLE users ALTER COLUMN email_verified SET NOT NULL;
    ```
@@ -275,13 +289,6 @@ FROM pg_stat_user_indexes ORDER BY idx_scan;
 - Lock wait time
 - Active connections
 - Transaction duration
-
-**6-Day Sprint Database Strategy**:
-- Day 1-2: Design schema with growth in mind
-- Day 3: Implement with proper indexes
-- Day 4: Load test and optimize queries
-- Day 5: Set up monitoring and backups
-- Day 6: Document scaling strategy
 
 ## Team Collaboration Protocol
 
